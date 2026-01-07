@@ -3,7 +3,7 @@ import { Employee, Department, EmployeeStatus } from './types';
 import { EmployeeList } from './components/EmployeeList';
 import { EmployeeDetail } from './components/EmployeeDetail';
 import { DepartmentChart } from './components/DepartmentChart';
-import { Users, Search, Plus, Settings, Download, Upload, X, Clipboard, Save, UserPlus, Github } from 'lucide-react';
+import { Users, Search, Plus, Settings, Download, Upload, X, Clipboard, Save, UserPlus, Github, CloudDownload } from 'lucide-react';
 
 // Mock Data
 const MOCK_EMPLOYEES: Employee[] = [
@@ -140,11 +140,11 @@ const App: React.FC = () => {
 
   const handlePasteImport = () => {
     try {
-      const parsedData = JSON.parse(pasteData);
+      const parsedData = JSON.parse(pasteData.trim());
       processImportData(parsedData);
       setPasteData('');
     } catch (err) {
-      alert('ข้อมูลที่วางไม่ถูกต้อง (Invalid JSON Format) กรุณาตรวจสอบว่าก๊อปปี้มาครบถ้วน');
+      alert('ข้อมูลที่วางไม่ถูกต้อง (Invalid JSON Format) กรุณาตรวจสอบว่าก๊อปปี้มาครบถ้วนและถูกต้อง');
     }
   };
 
@@ -214,68 +214,74 @@ const App: React.FC = () => {
             </button>
             
             <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-              <Settings className="text-indigo-600" /> จัดการข้อมูล (Data Manager)
+              <CloudDownload className="text-indigo-600" /> Data Sync & Settings
             </h2>
 
             <div className="space-y-6">
-              {/* Export */}
-              <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                <h3 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                  <Download size={18} /> สำรองข้อมูล (Backup)
-                </h3>
-                <p className="text-xs text-gray-500 mb-3">ดาวน์โหลดข้อมูลปัจจุบันเก็บไว้เป็นไฟล์ JSON เพื่อนำไปใช้ที่อื่นหรือ GitHub</p>
-                <button 
-                  onClick={handleExportData}
-                  className="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors flex justify-center items-center gap-2"
-                >
-                  <Download size={16} /> ดาวน์โหลด JSON
-                </button>
-              </div>
-
-              <div className="border-t border-gray-100 my-4"></div>
-
-              {/* Import File */}
-              <div>
-                <h3 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                  <Upload size={18} /> นำเข้าจากไฟล์ (Import File)
-                </h3>
-                <label className="flex flex-col items-center justify-center w-full h-20 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
-                    <div className="flex flex-col items-center justify-center pt-2 pb-3">
-                        <p className="text-xs text-gray-500"><span className="font-semibold">คลิกเพื่อเลือกไฟล์ .json</span></p>
-                    </div>
-                    <input type="file" className="hidden" accept=".json" onChange={handleImportFile} />
-                </label>
-              </div>
-
+              
               {/* Paste JSON / GitHub Import */}
-              <div>
-                <h3 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                  <Clipboard size={18} /> นำเข้าข้อมูล (Text/GitHub)
+              <div className="bg-white border-2 border-indigo-100 rounded-xl p-4 shadow-sm">
+                <h3 className="font-semibold text-indigo-900 mb-2 flex items-center gap-2">
+                  <Github size={18} /> นำเข้าข้อมูลจาก GitHub / Text
                 </h3>
                 
-                <div className="bg-blue-50 p-3 rounded-lg mb-3 text-xs text-blue-800 border border-blue-100">
-                  <strong className="flex items-center gap-1 mb-1"><Github size={12}/> วิธีนำเข้าจาก GitHub:</strong>
-                  <ol className="list-decimal ml-4 space-y-1 text-blue-700">
-                    <li>ไปที่ GitHub ของคุณ เปิดไฟล์ข้อมูล (เช่น <code>data.json</code>)</li>
-                    <li>คลิกปุ่ม <strong>Raw</strong> หรือ <strong>Copy raw file</strong></li>
-                    <li>นำข้อความทั้งหมดมาวางในช่องด้านล่างแล้วกดปุ่มสีเขียว</li>
+                <div className="bg-indigo-50 p-3 rounded-lg mb-3 text-xs text-indigo-800 border border-indigo-100">
+                  <strong className="block mb-1">วิธีซิงค์ข้อมูลจาก GitHub:</strong>
+                  <ol className="list-decimal ml-4 space-y-1 opacity-80">
+                    <li>ไปที่ GitHub > เปิดไฟล์ <code>data.json</code></li>
+                    <li>คลิกปุ่ม <strong>Raw</strong></li>
+                    <li>ก๊อปปี้ข้อความทั้งหมด (Ctrl+A, Ctrl+C)</li>
+                    <li>นำมาวางในช่องด้านล่าง แล้วกดปุ่มยืนยัน</li>
                   </ol>
                 </div>
 
                 <textarea 
                   value={pasteData}
                   onChange={(e) => setPasteData(e.target.value)}
-                  placeholder='วางข้อมูล JSON ที่นี่ เช่น [{"id": "EMP-001", ...}]'
-                  className="w-full h-24 p-2 text-xs font-mono border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder='วางข้อมูล JSON ที่นี่...'
+                  className="w-full h-32 p-3 text-xs font-mono border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 mb-3"
                 />
                 <button 
                   onClick={handlePasteImport}
                   disabled={!pasteData}
-                  className="mt-2 w-full bg-green-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors disabled:bg-gray-300 flex justify-center items-center gap-2"
+                  className="w-full bg-indigo-600 text-white py-2.5 rounded-lg text-sm font-bold hover:bg-indigo-700 transition-colors disabled:bg-gray-300 flex justify-center items-center gap-2 shadow-md shadow-indigo-200"
                 >
-                  <Save size={16} /> ยืนยันการนำเข้าข้อมูล
+                  <Save size={16} /> ยืนยันการนำเข้าข้อมูล (Import)
                 </button>
               </div>
+
+              <div className="relative flex items-center py-2">
+                <div className="flex-grow border-t border-gray-200"></div>
+                <span className="flex-shrink-0 mx-4 text-gray-400 text-xs uppercase">หรือ</span>
+                <div className="flex-grow border-t border-gray-200"></div>
+              </div>
+
+              {/* Import File */}
+              <div>
+                <h3 className="font-semibold text-gray-700 mb-2 flex items-center gap-2 text-sm">
+                  <Upload size={16} /> นำเข้าจากไฟล์ (.json)
+                </h3>
+                <label className="flex flex-col items-center justify-center w-full h-16 border border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <div className="flex flex-col items-center justify-center pt-2 pb-2">
+                        <p className="text-xs text-gray-500">คลิกเพื่อเลือกไฟล์จากคอมพิวเตอร์</p>
+                    </div>
+                    <input type="file" className="hidden" accept=".json" onChange={handleImportFile} />
+                </label>
+              </div>
+
+               {/* Export */}
+               <div>
+                <h3 className="font-semibold text-gray-700 mb-2 flex items-center gap-2 text-sm">
+                  <Download size={16} /> สำรองข้อมูล (Backup)
+                </h3>
+                <button 
+                  onClick={handleExportData}
+                  className="w-full bg-white border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex justify-center items-center gap-2"
+                >
+                  <Download size={14} /> ดาวน์โหลด JSON ปัจจุบัน
+                </button>
+              </div>
+
             </div>
           </div>
         </div>
@@ -377,13 +383,22 @@ const App: React.FC = () => {
                 <p className="text-xs text-gray-400">ระบบจัดการประวัติ</p>
               </div>
             </div>
-            <button 
-              onClick={() => setIsSettingsOpen(true)}
-              className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-              title="จัดการข้อมูล"
-            >
-              <Settings size={20} />
-            </button>
+            <div className="flex gap-1">
+              <button 
+                onClick={() => setIsSettingsOpen(true)}
+                className="p-2 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors border border-indigo-100"
+                title="Sync from GitHub / นำเข้าข้อมูล"
+              >
+                <CloudDownload size={20} />
+              </button>
+              <button 
+                onClick={() => setIsSettingsOpen(true)}
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                title="ตั้งค่าอื่นๆ"
+              >
+                <Settings size={20} />
+              </button>
+            </div>
           </div>
           
           {/* Stats/Chart Mini View */}
@@ -440,7 +455,7 @@ const App: React.FC = () => {
               <Users size={40} className="text-gray-300" />
             </div>
             <h2 className="text-xl font-semibold text-gray-600">ยินดีต้อนรับสู่ HR Smart Records</h2>
-            <p className="mt-2 text-sm">เลือกพนักงานจากรายการด้านซ้ายเพื่อดูรายละเอียด <br/> หรือกดปุ่ม <Settings size={14} className="inline"/> เพื่อนำเข้าข้อมูลเดิมของคุณ</p>
+            <p className="mt-2 text-sm">เลือกพนักงานจากรายการด้านซ้ายเพื่อดูรายละเอียด <br/> หรือกดปุ่ม <CloudDownload size={14} className="inline"/> ด้านบนเพื่อดึงข้อมูลจาก GitHub</p>
           </div>
         )}
       </div>
