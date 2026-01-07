@@ -1,0 +1,7 @@
+{
+  "name": "HR Smart Records",
+  "description": "ระบบจัดการประวัติพนักงานอัจฉริยะ (Smart Employee History System) ที่ช่วยเก็บข้อมูล ประวัติการทำงาน และใช้ AI ช่วยสรุปผลการประเมินและเขียนคำบรรยายลักษณะงาน",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
